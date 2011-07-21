@@ -7,7 +7,7 @@ class sun-java {
   $release = regsubst(generate("/usr/bin/lsb_release", "-s", "-c"), '(\w+)\s', '\1')
   
   file { "partner.list":
-    path => "/etc/apt/sources.list.d/partner.list"
+    path => "/etc/apt/sources.list.d/partner.list",
     ensure => file,
     owner => "root",
     group => "root",
