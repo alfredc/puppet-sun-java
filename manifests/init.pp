@@ -5,7 +5,7 @@
 class sun-java {
 
   $release = regsubst(generate("/usr/bin/lsb_release", "-s", "-c"), '(\w+)\s', '\1')
-  
+
   file { "partner.list":
     path => "/etc/apt/sources.list.d/partner.list",
     ensure => file,
@@ -20,16 +20,22 @@ class sun-java {
     refreshonly => true,
   }
 
+  package { "debconf-utils":
+    ensure => installed,
+  }
+
   exec { "agree-to-jdk-license":
     command => "/bin/echo -e sun-java6-jdk shared/accepted-sun-dlj-v1-1 select true | debconf-set-selections",
     unless => "debconf-get-selections | grep 'sun-java6-jdk.*shared/accepted-sun-dlj-v1-1.*true'",
     path => ["/bin", "/usr/bin"],
+    require => Package["debconf-utils"],
   }
 
   exec { "agree-to-jre-license":
     command => "/bin/echo -e sun-java6-jre shared/accepted-sun-dlj-v1-1 select true | debconf-set-selections",
     unless => "debconf-get-selections | grep 'sun-java6-jre.*shared/accepted-sun-dlj-v1-1.*true'",
     path => ["/bin", "/usr/bin"],
+    require => Package["debconf-utils"],
   }
 
   package { "sun-java6-jdk":
